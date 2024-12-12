@@ -1,17 +1,23 @@
-import 'package:hive/hive.dart';
-import 'package:nocodb_app/models/table_record.dart';
-
-
-part 'base.g.dart';
-
-@HiveType(typeId: 2)
-class Base extends HiveObject { // Extend HiveObject
-  @HiveField(0)
-  final String id;
-  @HiveField(1)
+class Base {
+  final String? id;
   final String name;
-  @HiveField(2)
-  final List<TableRecord> tables;
 
-  Base({required this.id, required this.name, required this.tables});
+  Base({this.id, required this.name});
+
+  
+  factory Base.fromJson(Map<String, dynamic> json) {
+    return Base(
+      id: json['id'] as String,
+      name: json['title'] as String, 
+    );
+  }
+
+  Map<String, dynamic> toJson(workspaceId) {
+    return {
+      "title": name,
+      "fk_workspace_id": workspaceId,
+      "type": "database",
+      "meta": "{\"iconColor\":\"#6A7184\"}"
+    };
+  }
 }
