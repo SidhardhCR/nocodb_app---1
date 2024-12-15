@@ -117,7 +117,7 @@ For questions, suggestions, or feedback, please contact:
 
 **Your Name**  
 Email: sidhardhcr007@gmail.com 
-GitHub: [your-username](https://github.com/SidhardhCR)
+GitHub: [SidhardhCR](https://github.com/SidhardhCR)
 
 ---
 
