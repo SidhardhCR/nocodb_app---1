@@ -76,7 +76,7 @@ Use built-in dialogs to confirm row or column deletions, avoiding accidental dat
 ### 1. Main Interface
 A clean and intuitive interface for managing your data:
 
-![Main Interface](screenshots/main_interface.png)
+![Main Interface]<img src="screenshots/main_interface.png width=240 />
 
 ### 2. Table Screen
 Quickly create new columns with customizable names:
