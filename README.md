@@ -81,12 +81,12 @@ A clean and intuitive interface for managing your data:
 ### 2. Table Screen
 Quickly create new columns with customizable names:
 
-![Table Data Screen](screenshots/table_data_screem.png)
+<img src="./screenshots/table_data_screem.png" width=240 />
 
 ### 3. Login Page
 Edit rows directly with an intuitive text field:
 
-![Login Screen](screenshots/login_screen.png)
+<img src="./screenshots/login_screen.png" width=240 />
 
 ---
 
