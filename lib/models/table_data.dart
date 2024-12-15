@@ -1,4 +1,5 @@
 class TableData {
+  // ignore: prefer_typing_uninitialized_variables
   final id;
   final List<String> columns;
   final List<Map<String, dynamic>> rows;
@@ -10,6 +11,7 @@ class TableData {
   });
 
   factory TableData.fromJson(Map<String, dynamic> json) {
+    // ignore: prefer_typing_uninitialized_variables
     var id;
     List<String> columns = [];
     List<Map<String, dynamic>> rows = [];

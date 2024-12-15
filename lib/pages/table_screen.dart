@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nocodb_app/api/ApiServices.dart';
-import 'package:nocodb_app/models/Base.dart';
-import 'package:nocodb_app/models/TableRecord.dart';
-import 'DataScreen.dart';
+import 'package:nocodb_app/api/api_services.dart';
+import 'package:nocodb_app/models/base_data.dart';
+import 'package:nocodb_app/models/table_record.dart';
+import 'data_screen.dart';
 
 class TableScreen extends StatelessWidget {
   final Base base;

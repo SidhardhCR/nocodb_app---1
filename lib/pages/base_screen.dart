@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nocodb_app/api/ApiServices.dart';
-import 'package:nocodb_app/models/Base.dart';
-import 'package:nocodb_app/pages/SplashScreen.dart';
-import 'package:nocodb_app/pages/TableScreen.dart';
+import 'package:nocodb_app/api/api_services.dart';
+import 'package:nocodb_app/models/base_data.dart';
+import 'package:nocodb_app/pages/splash_screen.dart';
+import 'package:nocodb_app/pages/table_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseScreen extends StatelessWidget {
@@ -57,7 +57,7 @@ class BaseScreen extends StatelessWidget {
           ),
           actions: [
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.logout,
                 color: Colors.white,
               ),
@@ -65,8 +65,9 @@ class BaseScreen extends StatelessWidget {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.clear();
                 Navigator.pushReplacement(
+                  // ignore: use_build_context_synchronously
                   context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
                 );
               },
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nocodb_app/api/ApiServices.dart';
-import 'package:nocodb_app/models/Base.dart';
-import 'package:nocodb_app/models/TableRecord.dart';
+import 'package:nocodb_app/api/api_services.dart';
+import 'package:nocodb_app/models/base_data.dart';
+import 'package:nocodb_app/models/table_record.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -12,6 +12,7 @@ class DataTableScreen extends StatefulWidget {
   const DataTableScreen({super.key, required this.table, required this.base});
 
   @override
+  // ignore: library_private_types_in_public_api
   _DataTableScreenState createState() => _DataTableScreenState();
 }
 
@@ -356,7 +357,7 @@ class _DataTableScreenState extends State<DataTableScreen> {
       body: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
-          headingRowColor: MaterialStateColor.resolveWith(
+          headingRowColor: WidgetStateColor.resolveWith(
             (states) => Colors.grey.shade200,
           ),
           border: TableBorder(
@@ -470,7 +471,7 @@ class _DataTableScreenState extends State<DataTableScreen> {
                       },
                     ),
                   );
-                }).toList(),
+                }),
               ],
             );
           }).toList(),

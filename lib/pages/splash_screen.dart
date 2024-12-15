@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:nocodb_app/pages/BaseScreen.dart';
+import 'package:nocodb_app/pages/base_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SplashScreenState createState() => _SplashScreenState();
 }
 
@@ -22,20 +25,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
     if (token != null) {
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => BaseScreen()),
       );
     } else {
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: CircularProgressIndicator(),
       ),
@@ -44,7 +49,10 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _LoginScreenState createState() => _LoginScreenState();
 }
 
@@ -77,12 +85,14 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setString('xcAuthToken', token);
 
       Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
         context,
         MaterialPageRoute(builder: (context) => BaseScreen()),
       );
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Login failed. Please try again.')),
+        const SnackBar(content: Text('Login failed. Please try again.')),
       );
     }
 
@@ -94,9 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(246, 246, 254, 1),
+      backgroundColor: const Color.fromRGBO(246, 246, 254, 1),
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Login',
           style: TextStyle(color: Colors.white),
         ),
@@ -111,10 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                  decoration:
+                      const BoxDecoration(color: Colors.white, boxShadow: [
                     BoxShadow(
                       color: Colors.grey,
-                      offset: const Offset(
+                      offset: Offset(
                         5.0,
                         5.0,
                       ),
@@ -122,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       spreadRadius: 2.0,
                     )
                   ]),
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -130,22 +141,23 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         TextField(
                           controller: _emailController,
-                          decoration: InputDecoration(labelText: 'Email'),
+                          decoration: const InputDecoration(labelText: 'Email'),
                         ),
                         TextField(
                           controller: _passwordController,
-                          decoration: InputDecoration(labelText: 'Password'),
+                          decoration:
+                              const InputDecoration(labelText: 'Password'),
                           obscureText: true,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         _isLoading
-                            ? Center(child: CircularProgressIndicator())
+                            ? const Center(child: CircularProgressIndicator())
                             : ElevatedButton(
-                                style: ButtonStyle(
+                                style: const ButtonStyle(
                                     backgroundColor: WidgetStatePropertyAll(
                                         Color.fromRGBO(51, 102, 254, 1))),
                                 onPressed: login,
-                                child: Text(
+                                child: const Text(
                                   'Sign In',
                                   style: TextStyle(color: Colors.white),
                                 ),

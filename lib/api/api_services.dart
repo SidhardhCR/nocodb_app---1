@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:nocodb_app/models/Base.dart';
-import 'package:nocodb_app/models/TableRecord.dart';
-import 'package:nocodb_app/models/TableData.dart';
+import 'package:nocodb_app/models/base_data.dart';
+import 'package:nocodb_app/models/table_record.dart';
+import 'package:nocodb_app/models/table_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
