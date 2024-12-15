@@ -24,8 +24,8 @@ class TableScreen extends StatelessWidget {
 
       tablesNotifier.value = tables;
     } catch (e) {
-      print('Failed to load tables: $e');
-      tablesNotifier.value = []; // Ensure state is reset in case of error
+      tablesNotifier.value = []; 
+      throw Exception('Failed to load tables: $e');
     } finally {
       isLoading.value = false;
     }
@@ -39,14 +39,14 @@ class TableScreen extends StatelessWidget {
     );
 
     try {
-      // Save the table locally or via API if needed
+     
       await apiService.createTable(base.id!, newTable);
       showBottomSheetTable.value = false;
       tableTextController.clear();
       await _loadTables();
-      // Clear the input and dismiss the bottom sheet
+     
     } catch (error) {
-      print("Failed to add table: $error");
+      throw Exception("Failed to add table: $error");
     }
   }
 
@@ -77,7 +77,6 @@ class TableScreen extends StatelessWidget {
                 itemCount: tables.length,
                 itemBuilder: (context, index) {
                   final table = tables[index];
-                  print(table.id);
                   return ListTile(
                     title: Text(table.name),
                     onTap: () {

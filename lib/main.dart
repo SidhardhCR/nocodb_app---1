@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:nocodb_app/pages/BaseScreen.dart';
 import 'package:nocodb_app/pages/SplashScreen.dart';
 
 void main() async {

@@ -29,17 +29,17 @@ class ApiService {
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
 
-        // Extracting the 'list' key to get the bases
+      
         final List<dynamic> baseList = jsonResponse['list'] ?? [];
 
-        // Mapping the 'list' of bases to your Base model
+      
         return baseList.map((e) => Base.fromJson(e)).toList();
       } else {
-        print('Error: ${response.body}');
+        
         throw Exception('Failed to fetch bases');
       }
     } catch (error) {
-      print('Failed to load bases: $error');
+     
       throw Exception('Error fetching bases: $error');
     }
   }
@@ -60,14 +60,12 @@ class ApiService {
         body: jsonEncode(newBase.toJson()),
       );
 
-      if (response.statusCode == 200) {
-        print('Base created successfully');
-      } else {
-        print('Failed to create base: ${response.body}');
+      if (response.statusCode != 200) {
+        
         throw Exception('Failed to create base');
       }
     } catch (error) {
-      print('Failed to create base: $error');
+     
       throw Exception('Error creating base: $error');
     }
   }
@@ -90,14 +88,13 @@ class ApiService {
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final List<dynamic> tableList = jsonResponse['list'] ?? [];
 
-        // Map the API response to a list of TableRecord
         return tableList.map((e) => TableRecord.fromJson(e)).toList();
       } else {
-        print('Error: ${response.body}');
+       
         throw Exception('Failed to fetch tables');
       }
     } catch (error) {
-      print('Failed to load tables: $error');
+     
       throw Exception('Error fetching tables: $error');
     }
   }
@@ -116,14 +113,12 @@ class ApiService {
         },
         body: jsonEncode(table.toJson()),
       );
-      if (response.statusCode == 200) {
-        print('Table created successfully');
-      } else {
-        print('Failed to create base: ${response.body}');
+      if (response.statusCode != 200) { 
+        
         throw Exception('Failed to create base');
       }
     } catch (error) {
-      print('failed to create table: $error');
+      throw Exception('failed to create table: $error');
     }
   }
 
@@ -142,21 +137,13 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        print(response.body);
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
-        print(jsonResponse);
-        // Extract the first record from the 'list'
         final List<dynamic> recordList = jsonResponse['list'] ?? [];
-        print(recordList);
-
-        // Create a TableData object from filtered data
         return recordList.map((e) => TableData.fromJson(e)).toList();
       } else {
-        print('Error: ${response.body}');
         throw Exception('Failed to fetch Table Data');
       }
     } catch (error) {
-      print('Failed to load Table Data: $error');
       throw Exception('Error fetching Table Data: $error');
     }
   }
@@ -175,7 +162,6 @@ class ApiService {
         },
       );
       if (response.statusCode == 200) {
-        print("Success to fetch columns id");
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
         final List<dynamic> columnList = jsonResponse['columns'] ?? [];
         final List sublist = columnList.sublist(6);
@@ -189,14 +175,11 @@ class ApiService {
         };
 
         idTitleList.addEntries(titleobj.entries);
-        print(idTitleList);
         return idTitleList;
       } else {
-        print("failed to load columns id");
         throw Exception('Error loading column id ');
       }
     } catch (error) {
-      print("failed to fetch columns id: $error");
       throw Exception('Error fetching column id : $error');
     }
   }
@@ -216,13 +199,12 @@ class ApiService {
           body: jsonEncode([
             {'Id': id}
           ]));
-      if (response.statusCode == 200) {
-        print("Successfully deleted row: ${response.body}");
-      } else {
-        print('error in delete row');
+      if (response.statusCode != 200) {
+        
+        throw Exception('error in delete row');
       }
     } catch (error) {
-      print('Failed to delete row: $error');
+      throw Exception('Failed to delete row: $error');
     }
   }
 }

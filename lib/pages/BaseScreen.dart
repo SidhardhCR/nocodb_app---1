@@ -24,7 +24,7 @@ class BaseScreen extends StatelessWidget {
       final bases = await apiService.fetchBases();
       basesNotifier.value = bases;
     } catch (e) {
-      print("Failed to load bases: $e");
+      throw Exception("Failed to load bases: $e");
     } finally {
       isLoding.value = false;
     }
@@ -43,7 +43,7 @@ class BaseScreen extends StatelessWidget {
       showBottomSheetBase.value = false;
       await _loadBases();
     } catch (e) {
-      print("Failed to create base: $e");
+      throw Exception("Failed to create base: $e");
     }
   }
 

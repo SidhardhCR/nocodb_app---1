@@ -41,13 +41,9 @@ class _DataTableScreenState extends State<DataTableScreen> {
       columnid = await ApiService().getColumnsId(widget.table.id!);
 
       final response = await ApiService().fetchTableRecords(widget.table.id!);
-      for (var item in response) {
-        print(item.columns);
-      }
       setState(() {
         apiId = response.map((record) => record.id).toList();
         apiColumns = response[0].columns;
-        print(apiColumns);
         apiRows = response.expand((record) {
           return record.rows.map((row) => Map<String, dynamic>.from(row));
         }).toList();
@@ -57,7 +53,7 @@ class _DataTableScreenState extends State<DataTableScreen> {
       setState(() {
         isLoading = false;
       });
-      print('Error fetching data: $error');
+      throw Exception('Error fetching data: $error');
     }
   }
 
@@ -69,10 +65,8 @@ class _DataTableScreenState extends State<DataTableScreen> {
   }
 
   void _addColumn() async {
-    print("hi");
     final name =
         dataTextController.text.isEmpty ? "Untitled" : dataTextController.text;
-    print(name);
     try {
       final token = await ApiService().getToken();
       if (token == null) {
@@ -103,16 +97,15 @@ class _DataTableScreenState extends State<DataTableScreen> {
           }));
 
       if (response.statusCode == 200) {
-        print("Successfully added column");
         setState(() {
           showBottomSheetData.value = false;
           _fetchData();
         });
       } else {
-        print("Failed to add column: ${response.body}");
+        throw Exception("Failed to add column: ${response.body}");
       }
     } catch (error) {
-      print("Falied to add column: $error");
+      throw Exception("Falied to add column: $error");
     }
   }
 
@@ -124,7 +117,6 @@ class _DataTableScreenState extends State<DataTableScreen> {
         throw Exception('Token not found');
       }
       if (id == null) {
-        // Perform asynchronous work outside of setState
         final response = await http.post(
           Uri.parse('$baseUrl/api/v2/tables/${widget.table.id}/records'),
           headers: {
@@ -137,14 +129,13 @@ class _DataTableScreenState extends State<DataTableScreen> {
         );
 
         if (response.statusCode == 200) {
-          print('Row successfully updated: ${response.body}');
           setState(() {
             final List id = jsonDecode(response.body);
             apiId.add(id[0]['Id']);
             _fetchData();
           });
         } else {
-          print('Failed to update row: ${response.body}');
+          throw Exception('Failed to update row: ${response.body}');
         }
       } else {
         final response = await http.patch(
@@ -159,18 +150,17 @@ class _DataTableScreenState extends State<DataTableScreen> {
         );
 
         if (response.statusCode == 200) {
-          print('Row successfully updated: ${response.body}');
           setState(() {
             final List id = jsonDecode(response.body);
             apiId.add(id[0]['Id']);
             _fetchData();
           });
         } else {
-          print('Failed to update row: ${response.body}');
+          throw Exception('Failed to update row: ${response.body}');
         }
       }
     } catch (e) {
-      print('Error updating cell: $e');
+      throw Exception('Error updating cell: $e');
     }
   }
 
@@ -256,15 +246,14 @@ class _DataTableScreenState extends State<DataTableScreen> {
         }),
       );
       if (response.statusCode == 200) {
-        print('Successfully updated column');
         setState(() {
           _fetchData();
         });
       } else {
-        print("failed to update column: ${response.body}");
+        throw Exception("failed to update column: ${response.body}");
       }
     } catch (error) {
-      print("error $error");
+      throw Exception("error $error");
     }
   }
 
@@ -274,7 +263,6 @@ class _DataTableScreenState extends State<DataTableScreen> {
       if (token == null) {
         throw Exception('Token not found');
       }
-      print(columnId);
       final response = await http.delete(
         Uri.parse('$baseUrl/api/v2/meta/columns/$columnId'),
         headers: {
@@ -287,10 +275,10 @@ class _DataTableScreenState extends State<DataTableScreen> {
           _fetchData();
         });
       } else {
-        print("error");
+        throw Exception("error");
       }
     } catch (error) {
-      print("error: $error");
+      throw Exception("error: $error");
     }
   }
 
@@ -402,8 +390,6 @@ class _DataTableScreenState extends State<DataTableScreen> {
                           if (result == 'Edit') {
                             _showEditColumnDialog(index, columnid[col]);
                           } else if (result == 'Delete') {
-                            print(col);
-                            print(columnid[col]);
                             _deleteColumn(columnid[col]);
                           }
                         },
@@ -448,10 +434,9 @@ class _DataTableScreenState extends State<DataTableScreen> {
                               onPressed: () {
                                 if (rowIndex < apiId.length) {
                                   _deleteRow(apiId[rowIndex]);
-                                  print(
-                                      'Deleting row with ID: ${apiId[rowIndex]}');
+                                  
                                 } else {
-                                  print('Cannot delete row without an ID.');
+                                  throw Exception('Cannot delete row without an ID.');
                                 }
                               },
                             )

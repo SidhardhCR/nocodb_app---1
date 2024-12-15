@@ -69,10 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (response.statusCode == 200) {
-      print(response.body);
       var responseData = jsonDecode(response.body);
       String token = responseData['token'];
-      print(token);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('email', email);
