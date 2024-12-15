@@ -78,12 +78,12 @@ A clean and intuitive interface for managing your data:
 
 ![Main Interface](screenshots/main_interface.png)
 
-### 2. Add Columns
+### 2. Table Screen
 Quickly create new columns with customizable names:
 
 ![Add Column](screenshots/add_column.png)
 
-### 3. Edit Rows
+### 3. Login Page
 Edit rows directly with an intuitive text field:
 
 ![Edit Row](screenshots/edit_row.png)
