@@ -53,8 +53,8 @@ Use built-in dialogs to confirm row or column deletions, avoiding accidental dat
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/nocodb-app.git
-   cd nocodb-app
+   git clone https://github.com/SidhardhCR/nocodb_app---1.git
+   cd nocodb-app-1
    ```
 
 2. Install dependencies:
