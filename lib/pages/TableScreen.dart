@@ -21,6 +21,7 @@ class TableScreen extends StatelessWidget {
     try {
       // Fetch tables from the API
       final tables = await apiService.fetchTables(base.id!);
+
       tablesNotifier.value = tables;
     } catch (e) {
       print('Failed to load tables: $e');
@@ -76,6 +77,7 @@ class TableScreen extends StatelessWidget {
                 itemCount: tables.length,
                 itemBuilder: (context, index) {
                   final table = tables[index];
+                  print(table.id);
                   return ListTile(
                     title: Text(table.name),
                     onTap: () {

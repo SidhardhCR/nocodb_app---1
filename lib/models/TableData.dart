@@ -1,8 +1,7 @@
 class TableData {
   final id;
-  final List<String> columns; 
-  final List<Map<String, dynamic>>
-      rows; 
+  final List<String> columns;
+  final List<Map<String, dynamic>> rows;
 
   TableData({
     required this.id,
@@ -10,24 +9,18 @@ class TableData {
     required this.rows,
   });
 
-
   factory TableData.fromJson(Map<String, dynamic> json) {
     var id;
     List<String> columns = [];
     List<Map<String, dynamic>> rows = [];
     Map<String, dynamic> data = {};
-    bool betweenKeys = false;
 
-    
     json.forEach((key, value) {
       if (key == 'Id') {
         id = value;
-        betweenKeys = true; 
-      } else if (key == 'CreatedAt') {
-        betweenKeys = false;
-      } else if (betweenKeys) {
+      } else if (key != "CreatedAt" && key != "UpdatedAt") {
         columns.add(key);
-        data[key] = value ?? ''; 
+        data[key] = value ?? '';
       }
     });
 

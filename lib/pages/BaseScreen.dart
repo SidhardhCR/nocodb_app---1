@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:nocodb_app/api/ApiServices.dart';
 import 'package:nocodb_app/models/Base.dart';
+import 'package:nocodb_app/pages/SplashScreen.dart';
 import 'package:nocodb_app/pages/TableScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseScreen extends StatelessWidget {
-  final String workspaceId;
   final ValueNotifier<List<Base>> basesNotifier;
   final ValueNotifier<bool> showBottomSheetBase = ValueNotifier(false);
   final TextEditingController baseTextController = TextEditingController();
   final ApiService apiService;
   final ValueNotifier<bool> isLoding = ValueNotifier(false);
 
-  BaseScreen({super.key, required this.workspaceId})
-      : apiService = ApiService(), 
+  BaseScreen({super.key})
+      : apiService = ApiService(),
         basesNotifier = ValueNotifier<List<Base>>([]) {
     _loadBases();
   }
@@ -20,11 +21,9 @@ class BaseScreen extends StatelessWidget {
   Future<void> _loadBases() async {
     isLoding.value = true;
     try {
-     
-      final bases = await apiService.fetchBases(workspaceId);
+      final bases = await apiService.fetchBases();
       basesNotifier.value = bases;
     } catch (e) {
-     
       print("Failed to load bases: $e");
     } finally {
       isLoding.value = false;
@@ -38,17 +37,12 @@ class BaseScreen extends StatelessWidget {
             : "Untitled Base");
 
     try {
-      
-      await apiService.createBase(workspaceId, newBase);
+      await apiService.createBase(newBase);
 
-      
       baseTextController.clear();
       showBottomSheetBase.value = false;
       await _loadBases();
-
-      
     } catch (e) {
-    
       print("Failed to create base: $e");
     }
   }
@@ -58,9 +52,25 @@ class BaseScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: const Text(
-            'Sample',
+            'NOCODB',
             style: TextStyle(color: Colors.white),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.clear();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginScreen()),
+                );
+              },
+            ),
+          ],
           backgroundColor: const Color.fromRGBO(51, 102, 254, 1)),
       body: ValueListenableBuilder(
           valueListenable: isLoding,

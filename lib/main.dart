@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nocodb_app/pages/BaseScreen.dart';
+import 'package:nocodb_app/pages/SplashScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'NocoDB App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: BaseScreen(workspaceId: dotenv.env['WORKSPACE_ID']!),
+      home: SplashScreen(),
     );
   }
 }

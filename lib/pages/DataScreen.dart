@@ -4,7 +4,6 @@ import 'package:nocodb_app/models/Base.dart';
 import 'package:nocodb_app/models/TableRecord.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DataTableScreen extends StatefulWidget {
   final TableRecord table;
@@ -17,11 +16,14 @@ class DataTableScreen extends StatefulWidget {
 }
 
 class _DataTableScreenState extends State<DataTableScreen> {
+  final baseUrl = 'http://projects-nocodb-bb16f8-107-155-122-26.traefik.me';
   final Map<String, TextEditingController> _controllers = {};
   final ValueNotifier<bool> showBottomSheetData = ValueNotifier(false);
   final TextEditingController dataTextController = TextEditingController();
-  List<String> apiColumns = [];
-  List<Map<String, dynamic>> apiRows = [];
+  List<String> apiColumns = ['Title'];
+  List<Map<String, dynamic>> apiRows = [
+    {'Title': ''}
+  ];
   List apiId = [];
   bool isLoading = true;
   Map columnid = {};
@@ -39,9 +41,13 @@ class _DataTableScreenState extends State<DataTableScreen> {
       columnid = await ApiService().getColumnsId(widget.table.id!);
 
       final response = await ApiService().fetchTableRecords(widget.table.id!);
+      for (var item in response) {
+        print(item.columns);
+      }
       setState(() {
         apiId = response.map((record) => record.id).toList();
         apiColumns = response[0].columns;
+        print(apiColumns);
         apiRows = response.expand((record) {
           return record.rows.map((row) => Map<String, dynamic>.from(row));
         }).toList();
@@ -49,16 +55,14 @@ class _DataTableScreenState extends State<DataTableScreen> {
       });
     } catch (error) {
       setState(() {
-        isLoading = false; 
+        isLoading = false;
       });
       print('Error fetching data: $error');
     }
-    
   }
 
   void _addNewRow() {
     setState(() {
-      
       final newRow = {for (var column in apiColumns) column: ''};
       apiRows.add(newRow);
     });
@@ -70,18 +74,38 @@ class _DataTableScreenState extends State<DataTableScreen> {
         dataTextController.text.isEmpty ? "Untitled" : dataTextController.text;
     print(name);
     try {
+      final token = await ApiService().getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.post(
-          Uri.parse(
-              'https://app.nocodb.com/api/v2/meta/tables/${widget.table.id}/columns'),
+          Uri.parse('$baseUrl/api/v2/meta/tables/${widget.table.id}/columns'),
           headers: {
             'Content-Type': 'application/json',
-            'xc-token': dotenv.env['API_KEY']!,
+            'xc-auth': token,
           },
-          body: jsonEncode({"title": name, "uidt": "SingleLineText"}));
+          body: jsonEncode({
+            "title": name,
+            "column_name": name,
+            "uidt": "SingleLineText",
+            "userHasChangedTitle": false,
+            "meta": {},
+            "rqd": false,
+            "pk": false,
+            "ai": false,
+            "cdf": null,
+            "un": false,
+            "dtx": "specificType",
+            "dt": "character varying",
+            "altered": 2,
+            "table_name": "nc_csht___${widget.table.name}",
+            "view_id": "vwavw34i2mhrtwri"
+          }));
 
       if (response.statusCode == 200) {
         print("Successfully added column");
         setState(() {
+          showBottomSheetData.value = false;
           _fetchData();
         });
       } else {
@@ -95,14 +119,17 @@ class _DataTableScreenState extends State<DataTableScreen> {
   Future<void> _updateCell(int? id, String column, String value) async {
     isLoading = true;
     try {
+      final token = await ApiService().getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       if (id == null) {
         // Perform asynchronous work outside of setState
         final response = await http.post(
-          Uri.parse(
-              'https://app.nocodb.com/api/v2/tables/${widget.table.id}/records'),
+          Uri.parse('$baseUrl/api/v2/tables/${widget.table.id}/records'),
           headers: {
             'Content-Type': 'application/json',
-            'xc-token': dotenv.env['API_KEY']!,
+            'xc-auth': token,
           },
           body: jsonEncode([
             {column: value}
@@ -121,11 +148,10 @@ class _DataTableScreenState extends State<DataTableScreen> {
         }
       } else {
         final response = await http.patch(
-          Uri.parse(
-              'https://app.nocodb.com/api/v2/tables/${widget.table.id}/records'),
+          Uri.parse('$baseUrl/api/v2/tables/${widget.table.id}/records'),
           headers: {
             'Content-Type': 'application/json',
-            'xc-token': dotenv.env['API_KEY']!,
+            'xc-auth': token,
           },
           body: jsonEncode([
             {'Id': id, column: value}
@@ -167,8 +193,7 @@ class _DataTableScreenState extends State<DataTableScreen> {
                       isLoading = true;
                       _fetchData();
                     });
-                    Navigator.of(context)
-                        .pop(); 
+                    Navigator.of(context).pop();
                   },
                   child: const Text(
                     'Delete record',
@@ -182,11 +207,15 @@ class _DataTableScreenState extends State<DataTableScreen> {
   void _updateColumnName(String id, String newName) async {
     isLoading = true;
     try {
+      final token = await ApiService().getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.patch(
-        Uri.parse('https://app.nocodb.com/api/v2/meta/columns/$id'),
+        Uri.parse('$baseUrl/api/v2/meta/columns/$id'),
         headers: {
           'Content-Type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!,
+          'xc-auth': token,
         },
         body: jsonEncode({
           "title": newName,
@@ -222,7 +251,6 @@ class _DataTableScreenState extends State<DataTableScreen> {
           "system": false,
           "order": 7,
           "meta": {"defaultViewColOrder": 7},
-          "fk_workspace_id": "wabuzafi",
           "altered": 8,
           "table_name": widget.table.name
         }),
@@ -242,12 +270,16 @@ class _DataTableScreenState extends State<DataTableScreen> {
 
   void _deleteColumn(String? columnId) async {
     try {
+      final token = await ApiService().getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       print(columnId);
       final response = await http.delete(
-        Uri.parse('https://app.nocodb.com/api/v2/meta/columns/$columnId'),
+        Uri.parse('$baseUrl/api/v2/meta/columns/$columnId'),
         headers: {
           'Content-Type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!,
+          'xc-auth': token,
         },
       );
       if (response.statusCode == 200) {
@@ -311,6 +343,24 @@ class _DataTableScreenState extends State<DataTableScreen> {
         body: const Center(
           child: Text("No data available"),
         ),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: _addNewRow,
+              tooltip: "Add Row",
+              child: const Icon(Icons.add),
+            ),
+            const SizedBox(width: 10),
+            FloatingActionButton(
+              onPressed: () {
+                showBottomSheetData.value = true;
+              },
+              tooltip: "Add Column",
+              child: const Icon(Icons.add_box),
+            ),
+          ],
+        ),
       );
     }
     return Scaffold(
@@ -336,8 +386,8 @@ class _DataTableScreenState extends State<DataTableScreen> {
             ),
             ...apiColumns.asMap().entries.map(
               (entry) {
-                final index = entry.key; 
-                final col = entry.value; 
+                final index = entry.key;
+                final col = entry.value;
 
                 return DataColumn(
                   label: Row(
@@ -350,8 +400,7 @@ class _DataTableScreenState extends State<DataTableScreen> {
                       PopupMenuButton<String>(
                         onSelected: (String result) {
                           if (result == 'Edit') {
-                            _showEditColumnDialog(
-                                index, columnid[col]); 
+                            _showEditColumnDialog(index, columnid[col]);
                           } else if (result == 'Delete') {
                             print(col);
                             print(columnid[col]);
@@ -410,7 +459,7 @@ class _DataTableScreenState extends State<DataTableScreen> {
                               onTap: () => isHovered.value = true,
                               child: Center(
                                 child: Text(
-                                  '${rowIndex + 1}', 
+                                  '${rowIndex + 1}',
                                   style: const TextStyle(color: Colors.black),
                                 ),
                               ),

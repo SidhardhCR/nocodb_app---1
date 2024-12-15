@@ -3,20 +3,28 @@ import 'dart:convert';
 import 'package:nocodb_app/models/Base.dart';
 import 'package:nocodb_app/models/TableRecord.dart';
 import 'package:nocodb_app/models/TableData.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  final baseUrl = 'https://app.nocodb.com';
+  final baseUrl = 'http://projects-nocodb-bb16f8-107-155-122-26.traefik.me';
+
+  Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('xcAuthToken');
+  }
 
   // Fetches bases from the API
-  Future<List<Base>> fetchBases(String workspaceId) async {
+  Future<List<Base>> fetchBases() async {
     try {
-      final response = await http.get(
-          Uri.parse('$baseUrl/api/v2/meta/workspaces/$workspaceId/bases'),
-          headers: {
-            'Content-type': 'application/json',
-            'xc-token': dotenv.env['API_KEY']!,
-          });
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
+      final response =
+          await http.get(Uri.parse('$baseUrl/api/v2/meta/bases'), headers: {
+        'Content-type': 'application/json',
+        'xc-auth': token,
+      });
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
@@ -37,18 +45,22 @@ class ApiService {
   }
 
   // Method to create a new base (you will need to implement the backend API for this)
-  Future<void> createBase(String workspaceId, Base newBase) async {
+  Future<void> createBase(Base newBase) async {
     try {
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.post(
-        Uri.parse('$baseUrl/api/v2/meta/workspaces/$workspaceId/bases'),
+        Uri.parse('$baseUrl/api/v2/meta/bases'),
         headers: {
           'Content-type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!,
+          'xc-auth': token,
         },
-        body: jsonEncode(newBase.toJson(workspaceId)),
+        body: jsonEncode(newBase.toJson()),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print('Base created successfully');
       } else {
         print('Failed to create base: ${response.body}');
@@ -62,11 +74,15 @@ class ApiService {
 
   Future<List<TableRecord>> fetchTables(String baseId) async {
     try {
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.get(
         Uri.parse('$baseUrl/api/v2/meta/bases/$baseId/tables'),
         headers: {
           'Content-Type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!, // Replace with your actual token
+          'xc-auth': token,
         },
       );
 
@@ -88,11 +104,15 @@ class ApiService {
 
   Future<void> createTable(String baseId, TableRecord table) async {
     try {
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.post(
         Uri.parse('$baseUrl/api/v2/meta/bases/$baseId/tables'),
         headers: {
           'Content-type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!,
+          'xc-auth': token,
         },
         body: jsonEncode(table.toJson()),
       );
@@ -109,11 +129,15 @@ class ApiService {
 
   Future<List<TableData>> fetchTableRecords(String tableID) async {
     try {
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.get(
-        Uri.parse('https://app.nocodb.com/api/v2/tables/$tableID/records'),
+        Uri.parse('$baseUrl/api/v2/tables/$tableID/records'),
         headers: {
           'Content-type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!,
+          'xc-auth': token,
         },
       );
 
@@ -139,11 +163,15 @@ class ApiService {
 
   Future<Map> getColumnsId(String tableId) async {
     try {
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.get(
         Uri.parse('$baseUrl/api/v2/meta/tables/$tableId'),
         headers: {
           'Content-Type': 'application/json',
-          'xc-token': dotenv.env['API_KEY']!,
+          'xc-auth': token,
         },
       );
       if (response.statusCode == 200) {
@@ -175,11 +203,15 @@ class ApiService {
 
   Future<void> deleteRow(String tableId, id) async {
     try {
+      final token = await getToken();
+      if (token == null) {
+        throw Exception('Token not found');
+      }
       final response = await http.delete(
           Uri.parse('$baseUrl/api/v2/tables/$tableId/records'),
           headers: {
             'Content-Type': 'application/json',
-            'xc-token': dotenv.env['API_KEY']!,
+            'xc-auth': token,
           },
           body: jsonEncode([
             {'Id': id}
