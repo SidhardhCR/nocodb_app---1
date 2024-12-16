@@ -6,28 +6,6 @@ NocoDB App empowers you to create no-code database solutions while maintaining t
 
 ---
 
-## Features
-
-- **No-Code Database Building**
-  Create and manage databases effortlessly, like editing a spreadsheet.
-
-- **Bring Your Own Database**
-  Connect with existing databases or use our built-in solution.
-
-- **Scalable for Millions of Rows**
-  Easily handle large datasets without compromising performance.
-
-- **Data Ownership and Control**
-  Your data stays in your hands. Define your own rules for access and modification.
-
-- **Customizable Columns & Rows**
-  Add, edit, or delete rows and columns dynamically with real-time updates.
-
-- **Interactive User Interface**
-  Modern UI with features like dialogs, popups, and dynamic content, ensuring a smooth user experience.
-
----
-
 ## How It Works
 
 ### 1. Add Rows & Columns
